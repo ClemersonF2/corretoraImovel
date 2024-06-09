@@ -103,12 +103,13 @@ public class VisitanteResource {
 	public Response delete(@PathParam("id") Long visitanteId) {
 	
 		if (VisitanteService.delete(visitanteId)) {
-			ResponseBuilder response = Response.noContent();
+			ResponseBuilder response = Response.status(204);
+			response.entity("Registro excluído com sucesso!");
 			return response.build();
 		} else {
 			System.out.println("Não foi possível remover o visitante: " + visitanteId);
 			ResponseBuilder response = Response.status(404);
-			response.entity("Registro excluído com suceso!");
+			response.entity("Não foi possível remover o visitante!");
 			return response.build();
 		}
 	}

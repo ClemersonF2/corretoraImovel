@@ -21,8 +21,8 @@ public class VisitanteRepository extends Repository{
 		
 		visitantes = new ArrayList<>();
 		
-		Pessoa p1 = new Pessoa("Clemerson","17011845602","999999990","email1@google.com","1");
-		Pessoa p2 = new Pessoa("Lucas","19011545602","999999990","email2@google.com","1");
+		Pessoa p1 = new Pessoa("Clemerson","17011845602","999999990","email1@google.com");
+		Pessoa p2 = new Pessoa("Lucas","19011545602","999999990","email2@google.com");
 		
 		visitantes.add(p1);
 		visitantes.add(p2);
@@ -54,12 +54,12 @@ public class VisitanteRepository extends Repository{
 
 						Pessoa pessoaVisitante = new Pessoa();
 
-						pessoaVisitante.setId(rs.getLong("ID"));
-						pessoaVisitante.setNome(rs.getString("NOME"));
-						pessoaVisitante.setDocumento(rs.getString("CPF"));
-						pessoaVisitante.setTelefone(rs.getString("TELEFONE"));
-						pessoaVisitante.setEmail(rs.getString("EMAIL"));
-						pessoaVisitante.setTipo(rs.getString("TIPO"));
+						pessoaVisitante.setId(rs.getLong("idpessoa"));
+						pessoaVisitante.setNome(rs.getString("nome"));
+						pessoaVisitante.setDocumento(rs.getString("cpf"));
+						pessoaVisitante.setTelefone(rs.getString("telefone"));
+						pessoaVisitante.setEmail(rs.getString("email"));
+
 
 
 						visitantes.add(pessoaVisitante);
@@ -77,17 +77,15 @@ public class VisitanteRepository extends Repository{
 	
 	public static Pessoa save(Pessoa visitante) {
 
-		String sql1 = "SELECT MAX (PESSOA.ID) FROM PESSOA";
+		String sql1 = "SELECT MAX (idpessoa) FROM PESSOA";
 		// @formatter:off
  		String sql = "INSERT INTO pessoa ("
- 				+ "    id,"
+ 				+ "    idpessoa,"
 				+ "    nome,"
 				+ "    cpf,"
 				+ "    telefone,"
-				+ "    email,"
-				+ "    tipo"
+				+ "    email"
 				+ ") VALUES ("
-				+ "    ?,"
 				+ "    ?,"
 				+ "    ?,"
 				+ "    ?,"
@@ -117,7 +115,7 @@ public class VisitanteRepository extends Repository{
 			pstmt.setString(3, visitante.getDocumento());
 			pstmt.setString(4, visitante.getTelefone());
 			pstmt.setString(5, visitante.getEmail());
-			pstmt.setString(6, visitante.getTipo());
+
 			
 			pstmt.executeUpdate();
 			
@@ -128,9 +126,9 @@ public class VisitanteRepository extends Repository{
 		} catch (SQLException e) {
 			System.out.println("Erro para salvar o visitante no banco de dados: " + e.getMessage());
 		} finally {
-			if (cs != null)
+			if (pstmt != null)
 				try {
-					cs.close();
+					pstmt.close();
 				} catch (SQLException e) {
 					System.out.println("Não foi possível fechar o Callable Statment: " + e.getMessage());
 				}
@@ -142,13 +140,13 @@ public class VisitanteRepository extends Repository{
 
 	public static boolean delete(Long VisitanteId) {
 
-		Pessoa Pessoa = null;
+		Pessoa pessoa = null;
 		String sql = "DELETE FROM Pessoa where ID = ?";
 		PreparedStatement ps = null;
 
-		Pessoa = findById(VisitanteId);
+		pessoa = findById(VisitanteId);
 
-		if (Pessoa == null) {
+		if (pessoa == null) {
 			return false;
 		}
 
@@ -177,7 +175,7 @@ public class VisitanteRepository extends Repository{
 	}
 
 	public static Pessoa findById(Long id) {
-		String sql = "SELECT * FROM Pessoa where id = ?";
+		String sql = "SELECT * FROM Pessoa where idpessoa = ?";
 
 		PreparedStatement ps = null;
 
@@ -194,11 +192,12 @@ public class VisitanteRepository extends Repository{
 			if (rs.isBeforeFirst()) {
 				Pessoa visitante = new Pessoa();
 				while (rs.next()) {
-					visitante.setId(rs.getLong("ID"));
+					visitante.setId(rs.getLong("IDPESSOA"));
 					visitante.setNome(rs.getString("NOME"));
+					visitante.setDocumento(rs.getString("CPF"));
 					visitante.setTelefone(rs.getString("TELEFONE"));
 					visitante.setEmail(rs.getString("EMAIL"));
-					visitante.setTipo(rs.getString("TIPO"));
+
 				}
 
 				return visitante;
@@ -230,20 +229,22 @@ public class VisitanteRepository extends Repository{
 
 	public static Pessoa update(@Valid Pessoa visitante) {
 
-		String sql = "UPDATE Pessoa set NOME=?, CPF =? , TELEFONE= ?, EMAIL= ? , TIPO= ? where id = ?";
+		String sql = "UPDATE Pessoa set NOME=?, CPF =? , TELEFONE= ?, EMAIL= ? where idpessoa = ?";
 
 		CallableStatement cs = null;
 
 		try {
+			getConnection().setAutoCommit(false);
 			cs = getConnection().prepareCall(sql);
 
 			cs.setString(1, visitante.getNome());
 			cs.setString(2, visitante.getDocumento());
 			cs.setString(3, visitante.getTelefone());
 			cs.setString(4, visitante.getEmail());
-			cs.setString(5, visitante.getTipo());
-			cs.setLong(6, visitante.getId());
+
+			cs.setLong(5, visitante.getId());
 			cs.executeUpdate();
+			getConnection().commit();
 
 			return visitante;
 

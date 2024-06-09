@@ -35,6 +35,7 @@ import java.sql.SQLException;
 		public static Connection getConnection() {
 			try {
 				connection = ConnectionFactory.getInstance().getConnection();
+
 				return connection;
 			} catch (Exception e) {
 				System.out.println("Erro nos parâmetros da conexão com o banco de dados :" + e.getMessage());

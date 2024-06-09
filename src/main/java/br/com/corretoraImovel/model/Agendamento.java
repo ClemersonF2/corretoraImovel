@@ -1,9 +1,8 @@
 package br.com.corretoraImovel.model;
 
+import java.sql.Time;
 import java.time.LocalDate;
-
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
+import java.time.LocalTime;
 
 public class Agendamento {
 	
@@ -11,22 +10,23 @@ public class Agendamento {
 
 	private LocalDate data;
 
-    private LocalDate hora;
+    private  LocalTime hora;
 
     private Imovel imovel;
     
     private Pessoa pessoa;
+
 
 	public Agendamento() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	
+
 	public Agendamento(Long id,
-			 LocalDate data,
-			 LocalDate hora, Imovel imovel,
-			 Pessoa pessoa) {
+					   LocalDate data,
+					   LocalTime hora, Imovel imovel,
+					   Pessoa pessoa) {
 		super();
 		this.id = id;
 		this.data = data;
@@ -55,12 +55,12 @@ public class Agendamento {
 	}
 
 
-	public LocalDate getHora() {
+	public LocalTime getHora() {
 		return hora;
 	}
 
 
-	public void setHora(LocalDate hora) {
+	public void setHora(LocalTime hora) {
 		this.hora = hora;
 	}
 

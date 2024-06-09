@@ -7,9 +7,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 public class Imovel {
 
 	private Long id;
-	
+
 	private Endereco endereco;
-	
 
     private int dormitorios;
 
@@ -20,15 +19,17 @@ public class Imovel {
     private double valorIptu;
 
     private double valorTaxaIncendio;
-	
-       
+
+	private Proprietario proprietario;
+
     
 	public Imovel() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Imovel(Long id, Endereco endereco,  int dormitorios, double valorAluguel, double valorCondominio, double valorIptu, double valorTaxaIncendio, Pessoa proprietario) {
+	public Imovel(Long id, Endereco endereco,  int dormitorios, double valorAluguel, double valorCondominio,
+				  double valorIptu, double valorTaxaIncendio, Proprietario proprietario) {
 		super();
 		this.id = id;
 		this.endereco = endereco;
@@ -37,9 +38,9 @@ public class Imovel {
 		this.valorCondominio = valorCondominio;
 		this.valorIptu = valorIptu;
 		this.valorTaxaIncendio = valorTaxaIncendio;
+		this.proprietario = proprietario;
 	
 	}
-
 
 
 	public Endereco getEndereco() {
@@ -86,6 +87,13 @@ public class Imovel {
 		this.id = id;
 	}
 
+	public Proprietario getProprietario() {
+		return proprietario;
+	}
+
+	public void setProprietario(Proprietario proprietario) {
+		this.proprietario = proprietario;
+	}
 
 	@Override
 	public String toString() {

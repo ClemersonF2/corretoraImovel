@@ -3,22 +3,23 @@ package br.com.corretoraImovel.model;
 import java.util.Objects;
 
 import jakarta.validation.constraints.NotBlank;
-
 public class Proprietario extends Pessoa{
-	
-	private Long id;
-	
-	private Imovel imovel;
-	 	 
-	public Proprietario() {
-		
+
+//
+	public Proprietario (){
+		super();
 	}
 
-	 
-	public Proprietario(Long id, @NotBlank(message = "O nome não pode estar em branco.") Imovel imovel) {
+	private Long id;
+
+	public Proprietario(String nome, String documento, String telefone, String email) {
+		super(nome, documento, telefone, email);
+	}
+
+	public Proprietario(Long id ) {
 		super();
 		this.id = id;
-		this.imovel = imovel;
+
 	}
 
 
@@ -30,18 +31,9 @@ public class Proprietario extends Pessoa{
 		this.id = id;
 	}
 
-	public Imovel getImovel() {
-		return imovel;
-	}
-
-	public void setImovel(Imovel imovel) {
-		this.imovel = imovel;
-	}
-
-
 	@Override
 	public String toString() {
-		return "Proprietario [id=" + id + ", imovel=" + imovel + "]";
+		return "Proprietario [id=" + id + ", imovel=" +  "]";
 	}
 
 	

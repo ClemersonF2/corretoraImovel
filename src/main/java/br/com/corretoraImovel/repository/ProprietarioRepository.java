@@ -10,39 +10,40 @@ import java.util.List;
 
 
 import br.com.corretoraImovel.model.Pessoa;
+import br.com.corretoraImovel.model.Proprietario;
 import jakarta.validation.Valid;
 
 public class ProprietarioRepository extends Repository{
 	
-	private static List<Pessoa> visitantes = null;
+	private static List<Proprietario> proprietarios = null;
 	
 	
 	static {
 		
-		visitantes = new ArrayList<>();
+		proprietarios = new ArrayList<>();
 		
-		Pessoa p1 = new Pessoa("Clemerson","17011845602","999999990","email1@google.com","1");
-		Pessoa p2 = new Pessoa("Lucas","19011545602","999999990","email2@google.com","1");
+		Proprietario p1 = new Proprietario("Clemerson","17011845602","999999990","email1@google.com");
+		Proprietario p2 = new Proprietario("Lucas","19011545602","999999990","email2@google.com");
 		
-		visitantes.add(p1);
-		visitantes.add(p2);
+		proprietarios.add(p1);
+		proprietarios.add(p2);
 		
 	}
 
-	public static List<Pessoa> findAll(){
-		return visitantes;
+	public static List<Proprietario> findAll(){
+		return proprietarios;
 	}
 	
 	//Consulta que chama banco de dados
-	public static List<Pessoa> consultaTodosVisitantes(){
+	public static List<Proprietario> consultaTodosProprietarios(){
 		
-			String sql = "SELECT * FROM PESSOA";
+			String sql = "SELECT * FROM PROPRIETARIO";
 
 			PreparedStatement ps = null;
 
 			ResultSet rs = null;
 
-			List<Pessoa> visitantes = new ArrayList<>();
+			List<Proprietario> proprietarios = new ArrayList<>();
 
 			try {
 				ps = getConnection().prepareStatement(sql);
@@ -50,50 +51,46 @@ public class ProprietarioRepository extends Repository{
 				rs = ps.executeQuery();
 
 				if (rs.isBeforeFirst()) {
+
 					while (rs.next()) {
 
-						Pessoa pessoaVisitante = new Pessoa();
+						Proprietario pessoaProprietario = new Proprietario();
 
-						pessoaVisitante.setId(rs.getLong("ID"));
-						pessoaVisitante.setNome(rs.getString("NOME"));
-						pessoaVisitante.setDocumento(rs.getString("CPF"));
-						pessoaVisitante.setTelefone(rs.getString("TELEFONE"));
-						pessoaVisitante.setEmail(rs.getString("EMAIL"));
-						pessoaVisitante.setTipo(rs.getString("TIPO"));
+						pessoaProprietario.setId(rs.getLong("ID"));
+						pessoaProprietario.setNome(rs.getString("NOME"));
+						pessoaProprietario.setDocumento(rs.getString("CPF"));
+						pessoaProprietario.setTelefone(rs.getString("TELEFONE"));
+						pessoaProprietario.setEmail(rs.getString("EMAIL"));
 
-
-						visitantes.add(pessoaVisitante);
+						proprietarios.add(pessoaProprietario);
 					}
 				} else {
 					System.out.println("Não foram encontrados registros na tabela do banco de dados.");
 				}
 
 			} catch (SQLException e) {
-				System.out.println("Não foi possível consultar a listagem de visitantes: " + e.getMessage());
+				System.out.println("Não foi possível consultar a listagem de proprietarios: " + e.getMessage());
 			}
 
-			return visitantes;
+			return proprietarios;
 	}
 	
-	public static Pessoa save(Pessoa visitante) {
+	public static Proprietario save(Proprietario proprietario) {
 
-		String sql1 = "SELECT MAX (PESSOA.ID) FROM PESSOA";
+		String sql1 = "SELECT MAX (idproprietario) FROM proprietario";
 		// @formatter:off
- 		String sql = "INSERT INTO pessoa ("
- 				+ "    id,"
+ 		String sql = "INSERT INTO proprietario ("
+ 				+ "    idproprietario,"
 				+ "    nome,"
 				+ "    cpf,"
-				+ "    telefone,"
 				+ "    email,"
-				+ "    tipo"
+				+ "    telefone"
 				+ ") VALUES ("
 				+ "    ?,"
 				+ "    ?,"
 				+ "    ?,"
 				+ "    ?,"
-				+ "    ?,"
-				+ "    ?"
-				+ ")";
+				+ "    ? )";
  		// @formatter:on
  		
  		Long nextID_from_seq = null;
@@ -112,21 +109,22 @@ public class ProprietarioRepository extends Repository{
 			}
 			
 			pstmt = getConnection().prepareStatement(sql);
+
 			pstmt.setLong(1, nextID_from_seq+1);
-			pstmt.setString(2, visitante.getNome());
-			pstmt.setString(3, visitante.getDocumento());
-			pstmt.setString(4, visitante.getTelefone());
-			pstmt.setString(5, visitante.getEmail());
-			pstmt.setString(6, visitante.getTipo());
+			pstmt.setString(2, proprietario.getNome());
+			pstmt.setString(3, proprietario.getDocumento());
+			pstmt.setString(4, proprietario.getTelefone());
+			pstmt.setString(5, proprietario.getEmail());
+
 			
 			pstmt.executeUpdate();
 			
-			visitante.setId((long) nextID_from_seq+1);
+			proprietario.setId((long) nextID_from_seq+1);
 			
-			return visitante;
+			return proprietario;
 
 		} catch (SQLException e) {
-			System.out.println("Erro para salvar o visitante no banco de dados: " + e.getMessage());
+			System.out.println("Erro para salvar o proprietario no banco de dados: " + e.getMessage());
 		} finally {
 			if (cs != null)
 				try {
@@ -140,29 +138,29 @@ public class ProprietarioRepository extends Repository{
 
 	}
 
-	public static boolean delete(Long VisitanteId) {
+	public static boolean delete(Long ProprietarioId) {
 
-		Pessoa Pessoa = null;
-		String sql = "DELETE FROM Pessoa where ID = ?";
+		Proprietario proprietario = null;
+		String sql = "DELETE FROM Proprietario where ID = ?";
 		PreparedStatement ps = null;
 
-		Pessoa = findById(VisitanteId);
+		proprietario = findById(ProprietarioId);
 
-		if (Pessoa == null) {
+		if (proprietario == null) {
 			return false;
 		}
 
 		try {
 			ps = getConnection().prepareStatement(sql);
 
-			ps.setLong(1, VisitanteId);
+			ps.setLong(1, ProprietarioId);
 
 			ps.executeUpdate();
 
 			return true;
 
 		} catch (SQLException e) {
-			System.out.println("Erro para deletar o visitante no banco de dados: " + e.getMessage());
+			System.out.println("Erro para deletar o proprietario no banco de dados: " + e.getMessage());
 		} finally {
 
 			if (ps != null)
@@ -176,36 +174,37 @@ public class ProprietarioRepository extends Repository{
 		return false;
 	}
 
-	public static Pessoa findById(Long id) {
-		String sql = "SELECT * FROM Pessoa where id = ?";
+	public static Proprietario findById(Long id) {
+		String sql = "SELECT * FROM Proprietario where idproprietario = ?";
 
 		PreparedStatement ps = null;
 
 		ResultSet rs = null;
 
 		try {
-
+			getConnection().setAutoCommit(false);
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setLong(1, id);
 
 			rs = ps.executeQuery();
-
+			System.out.println("pro "+id);
 			if (rs.isBeforeFirst()) {
-				Pessoa visitante = new Pessoa();
+				Proprietario proprietario = new Proprietario();
 				while (rs.next()) {
-					visitante.setId(rs.getLong("ID"));
-					visitante.setNome(rs.getString("NOME"));
-					visitante.setTelefone(rs.getString("TELEFONE"));
-					visitante.setEmail(rs.getString("EMAIL"));
-					visitante.setTipo(rs.getString("TIPO"));
-				}
+					proprietario.setId(rs.getLong("IDPROPRIETARIO"));
+					proprietario.setNome(rs.getString("NOME"));
+					proprietario.setDocumento(rs.getString("CPF"));
+					proprietario.setEmail(rs.getString("EMAIL"));
+					proprietario.setTelefone(rs.getString("TELEFONE"));
 
-				return visitante;
+				}
+				getConnection().commit();
+				return proprietario;
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Erro para consultar o visitante no banco de dados: " + e.getMessage());
+			System.out.println("Erro para consultar o proprietario no banco de dados: " + e.getMessage());
 		} finally {
 
 			if (ps != null)
@@ -228,27 +227,29 @@ public class ProprietarioRepository extends Repository{
 
 	}
 
-	public static Pessoa update(@Valid Pessoa visitante) {
+	public static Proprietario update(Proprietario proprietario) {
 
-		String sql = "UPDATE Pessoa set NOME=?, CPF =? , TELEFONE= ?, EMAIL= ? , TIPO= ? where id = ?";
+		String sql = "UPDATE PROPRIETARIO set NOME=?, CPF =? , TELEFONE= ?, EMAIL= ? where IDPROPRIETARIO = ?";
 
 		CallableStatement cs = null;
 
 		try {
+			getConnection().setAutoCommit(false);
 			cs = getConnection().prepareCall(sql);
 
-			cs.setString(1, visitante.getNome());
-			cs.setString(2, visitante.getDocumento());
-			cs.setString(3, visitante.getTelefone());
-			cs.setString(4, visitante.getEmail());
-			cs.setString(5, visitante.getTipo());
-			cs.setLong(6, visitante.getId());
-			cs.executeUpdate();
+			cs.setString(1, proprietario.getNome());
+			cs.setString(2, proprietario.getDocumento());
+			cs.setString(3, proprietario.getTelefone());
+			cs.setString(4, proprietario.getEmail());
 
-			return visitante;
+			cs.setLong(5, proprietario.getId());
+			cs.executeUpdate();
+			getConnection().commit();
+
+			return proprietario;
 
 		} catch (SQLException e) {
-			System.out.println("Erro ao atualizar o visitante no banco de dados: " + e.getMessage());
+			System.out.println("Erro ao atualizar o proprietario no banco de dados: " + e.getMessage());
 			if (cs != null)
 				try {
 					cs.close();

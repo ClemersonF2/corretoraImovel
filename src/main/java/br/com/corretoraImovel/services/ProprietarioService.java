@@ -1,69 +1,72 @@
 package br.com.corretoraImovel.services;
 
-import br.com.corretoraImovel.model.Pessoa;
-import br.com.corretoraImovel.repository.VisitanteRepository;
+import br.com.corretoraImovel.model.Proprietario;
+import br.com.corretoraImovel.model.Proprietario;
+import br.com.corretoraImovel.repository.ProprietarioRepository;
 
 public class ProprietarioService {
 	
-	static VisitanteRepository visitanteRepository = new VisitanteRepository();
+	static ProprietarioRepository proprietarioRepository = new ProprietarioRepository();
 	
 	public static boolean existe(Long id) {
-		return VisitanteRepository.findById(id) != null ? true : false;
+		return ProprietarioRepository.findById(id) != null ? true : false;
 	}
 
-	public static Pessoa findById(Long id) {
-		return VisitanteRepository.findById(id);
+	public static Proprietario findById(Long id) {
+		return ProprietarioRepository.findById(id);
 	}
 
-	public static Pessoa save(Pessoa visitante) {
+	public static Proprietario save(Proprietario proprietario) {
 	
-		Pessoa visitanteRepository = null;
+		Proprietario proprietarioRepository = null;
 		try {
-			if(validacaoVisitante(visitante) == false) {
+			if(validacaoProprietario(proprietario) == false) {
 				return null;
 			}
 			else {
-				visitanteRepository = VisitanteRepository.save(visitante);
-				return visitanteRepository;
+				proprietarioRepository = ProprietarioRepository.save(proprietario);
+				return proprietarioRepository;
 				}
 		}
 		catch (RuntimeException ex) {
-	           System.out.println("Exceção de runtime ao salvar visitante: "+ ex);
+	           System.out.println("Exceção de runtime ao salvar proprietario: "+ ex);
 	    } catch (Exception ex) {
-	    	System.out.println("Exceção ao salvar visitante: "+ex);
+	    	System.out.println("Exceção ao salvar proprietario: "+ex);
 	    }	
 		
-		return visitanteRepository;
+		return proprietarioRepository;
 		
 	}
 
-	public static Pessoa update(Long id, Pessoa visitante) {
+	public static Proprietario update(Long id, Proprietario proprietario) {
 
-		Pessoa velho = VisitanteRepository.findById(id);
-		Pessoa novo = null;
-		if (velho == null || velho.getId() != visitante.getId()) {
-			return VisitanteRepository.save(visitante);
+		Proprietario velho = ProprietarioRepository.findById(id);
+		Proprietario novo = null;
+		System.out.println("oi"+velho.getId());
+		if (velho == null || velho.getId() != proprietario.getId()) {
+			return ProprietarioRepository.save(proprietario);
 		}
-		novo = VisitanteRepository.update(visitante);
+		novo = ProprietarioRepository.update(proprietario);
 		return novo;
 	}
 
-	public static boolean delete(Long coffeeId) {
-		if (existe(coffeeId)) {
-			return VisitanteRepository.delete(coffeeId);
+	public static boolean delete(Long proprietarioId) {
+		if (existe(proprietarioId)) {
+			return ProprietarioRepository.delete(proprietarioId);
 		} else {
 			return false;
 		}
 
 	}
 	
-	 public static boolean validacaoVisitante(Pessoa visitante) {
+	 public static boolean validacaoProprietario(Proprietario proprietario) {
 	        boolean retorno = false;
 
-	        if(visitante.getDocumento().equals("") || visitante.getNome().equals("") || visitante.getTelefone().equals("")) {
+	        if(proprietario.getDocumento().equals("") || proprietario.getNome().equals("") || proprietario.getTelefone().equals("")) {
+				System.out.println("validaçao de campos.");
 	            return retorno = false;
 	        }
-	        else if (!validarCPF(visitante.getDocumento())){
+	        else if (!validarCPF(proprietario.getDocumento())){
 	        	 System.out.println("CPF inválido.");
 	        	retorno = false;
 	        }
