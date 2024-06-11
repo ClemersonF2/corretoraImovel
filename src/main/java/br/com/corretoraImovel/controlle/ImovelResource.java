@@ -86,7 +86,7 @@ public class ImovelResource {
     //DELETA IMOVEL
     @DELETE
     @Path("/{id}")
-    public Response delete(@PathParam("id") Long imovelId) {
+    public Response delete(@PathParam("id") Long imovelId) throws SQLException {
 
         if (ImovelService.delete(imovelId)) {
             ResponseBuilder response = Response.status(200);

@@ -4,6 +4,8 @@ import br.com.corretoraImovel.model.Pessoa;
 import br.com.corretoraImovel.repository.VisitanteRepository;
 import br.com.corretoraImovel.utils.Utils;
 
+import java.sql.SQLException;
+
 public class VisitanteService {
 	
 	static VisitanteRepository visitanteRepository = new VisitanteRepository();
@@ -50,7 +52,7 @@ public class VisitanteService {
 		return novo;
 	}
 
-	public static boolean delete(Long visitanteId) {
+	public static boolean delete(Long visitanteId) throws SQLException {
 		if (existe(visitanteId)) {
 			return VisitanteRepository.delete(visitanteId);
 		} else {

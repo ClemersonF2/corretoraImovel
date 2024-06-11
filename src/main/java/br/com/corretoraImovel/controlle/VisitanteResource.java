@@ -1,6 +1,7 @@
 package br.com.corretoraImovel.controlle;
 
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.glassfish.grizzly.http.util.HttpStatus;
@@ -100,7 +101,7 @@ public class VisitanteResource {
 	//DELETA VISITANTE
 	@DELETE
 	@Path("/{id}")
-	public Response delete(@PathParam("id") Long visitanteId) {
+	public Response delete(@PathParam("id") Long visitanteId) throws SQLException {
 	
 		if (VisitanteService.delete(visitanteId)) {
 			ResponseBuilder response = Response.status(204);

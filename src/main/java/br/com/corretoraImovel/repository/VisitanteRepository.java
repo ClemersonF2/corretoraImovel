@@ -138,10 +138,10 @@ public class VisitanteRepository extends Repository{
 
 	}
 
-	public static boolean delete(Long VisitanteId) {
+	public static boolean delete(Long VisitanteId) throws SQLException {
 
 		Pessoa pessoa = null;
-		String sql = "DELETE FROM Pessoa where ID = ?";
+		String sql = "DELETE FROM Pessoa where idpessoa = ?";
 		PreparedStatement ps = null;
 
 		pessoa = findById(VisitanteId);
@@ -151,16 +151,19 @@ public class VisitanteRepository extends Repository{
 		}
 
 		try {
+			getConnection().setAutoCommit(false);
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setLong(1, VisitanteId);
 
 			ps.executeUpdate();
+			getConnection().commit();
 
 			return true;
 
 		} catch (SQLException e) {
 			System.out.println("Erro para deletar o visitante no banco de dados: " + e.getMessage());
+			getConnection().rollback();
 		} finally {
 
 			if (ps != null)

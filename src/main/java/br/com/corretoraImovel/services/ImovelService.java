@@ -51,7 +51,7 @@ public class ImovelService {
             return novo;
         }
 
-        public static boolean delete(Long imovelId) {
+        public static boolean delete(Long imovelId) throws SQLException {
             if (existe(imovelId)) {
                 return ImovelRepository.delete(imovelId);
             } else {

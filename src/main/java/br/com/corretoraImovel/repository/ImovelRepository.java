@@ -41,11 +41,13 @@ public class ImovelRepository extends Repository{
         String sqlEndereco = "Select * FROM endereco where idendereco = ?";
         String SqlProprietario = "select * FROM proprietario where idproprietario";
         PreparedStatement ps = null;
-
+        PreparedStatement psEnd = null;
+        PreparedStatement psProp = null;
         ResultSet rs = null;
         ResultSet rsEndereco = null;
         ResultSet rsProprietario = null;
 
+        ProprietarioRepository proprietarioR = new ProprietarioRepository();
         List<Imovel> imovels = new ArrayList<>();
 
         try {
@@ -73,41 +75,33 @@ public class ImovelRepository extends Repository{
                     imovel1.setValorCondominio(rs.getDouble("valor_condominio"));
                     imovel1.setValorIptu(rs.getDouble("valor_iptu"));
                     imovel1.setValorTaxaIncendio(rs.getDouble("valor_taxa_incendio"));
-
+                    endereco.setId(rs.getLong("idendereco"));
+                    proprietario.setId(rs.getLong("idproprietario"));
+                    imovel1.setProprietario(proprietario);
+                    imovel1.setEndereco(endereco);
 
                     //consultar endereco
-                    ps = getConnection().prepareStatement(sqlEndereco);
-                    ps.setLong(1, imovel1.getEndereco().getId());
+                    psEnd = getConnection().prepareStatement(sqlEndereco);
+                    psEnd.setLong(1, imovel1.getEndereco().getId());
 
-                    rsEndereco = ps.executeQuery();
+                    rsEndereco = psEnd.executeQuery();
 
                     if (rsEndereco.isBeforeFirst()) {
 
                         while (rsEndereco.next()) {
-
+                            System.out.println("entro end"+ imovel1.getEndereco().getId());
                             endereco.setId(rsEndereco.getLong("idendereco"));
                             endereco.setBairro(rsEndereco.getString("Bairro"));
                             endereco.setLogradouro(rsEndereco.getString("Logradouro"));
                             endereco.setComplemento(rsEndereco.getString("complemento"));
+
                         }
+
                     }
-                    //consultar Proprietario
-                    ps = getConnection().prepareStatement(SqlProprietario);
-                    ps.setLong(1, imovel1.getProprietario().getId());
+                    //consulta proprietario
+                    proprietario = proprietarioR.findById(proprietario.getId());
+                    imovel1.setProprietario(proprietario);
 
-                    rsProprietario = ps.executeQuery();
-
-                    if (rsProprietario.isBeforeFirst()) {
-
-                        while (rsProprietario.next()) {
-
-                            proprietario.setId(rsProprietario.getLong("idendereco"));
-                            proprietario.setNome(rsProprietario.getString("nome"));
-                            proprietario.setDocumento(rsProprietario.getString("cpf"));
-                            proprietario.setTelefone(rsProprietario.getString("telefone"));
-                            proprietario.setEmail(rsProprietario.getString("email"));
-                        }
-                    }
                     imovel1.setEndereco(endereco);
                     imovel1.setProprietario(proprietario);
                     imovels.add(imovel1);
@@ -246,7 +240,7 @@ public class ImovelRepository extends Repository{
 
     }
 
-    public static boolean delete(Long imovelId) {
+    public static boolean delete(Long imovelId) throws SQLException {
 
         Imovel imovel = null;
         String sql = "DELETE FROM imovel where idimovel = ?";
@@ -265,6 +259,7 @@ public class ImovelRepository extends Repository{
 
         try {
             //consulta endereço
+            getConnection().setAutoCommit(false);
             ps = getConnection().prepareStatement(sqlConsultaEndereco);
 
             ps.setLong(1, imovel.getId());
@@ -296,11 +291,12 @@ public class ImovelRepository extends Repository{
             ps.setLong(1, imovel.getEndereco().getId());
 
             ps.executeUpdate();
-
+            getConnection().commit();
             return true;
 
         } catch (SQLException e) {
             System.out.println("Erro para deletar o imovel no banco de dados: " + e.getMessage());
+            getConnection().rollback();
         } finally {
 
             if (ps != null)
@@ -427,7 +423,6 @@ public class ImovelRepository extends Repository{
         return null;
 
     }
-
     public static Imovel update(Imovel imovel) {
 
         String sql = "UPDATE Imovel  set dormitorios=?, valor_aluguel =? , valor_condominio= ?, valor_iptu= ? , valor_taxa_incendio= ? where idimovel =?";
