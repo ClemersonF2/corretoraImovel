@@ -25,18 +25,16 @@ public class AgendamentoService {
 
         Agendamento agendamentoRepository = null;
         try {
-            if(validacaoAgendamento(agendamento) == false) {
+            if (validacaoAgendamento(agendamento) == false) {
                 return null;
-            }
-            else {
+            } else {
                 agendamentoRepository = AgendamentoRepository.save(agendamento);
                 return agendamentoRepository;
             }
-        }
-        catch (RuntimeException ex) {
-            System.out.println("Exceção de runtime ao salvar agendamento: "+ ex);
+        } catch (RuntimeException ex) {
+            System.out.println("Exceção de runtime ao salvar agendamento: " + ex);
         } catch (Exception ex) {
-            System.out.println("Exceção ao salvar agendamento: "+ex);
+            System.out.println("Exceção ao salvar agendamento: " + ex);
         }
 
         return agendamentoRepository;
@@ -47,13 +45,32 @@ public class AgendamentoService {
 
         Agendamento velho = AgendamentoRepository.findById(id);
         Agendamento novo = null;
+        System.out.println("ola"+ velho);
+        System.out.println("ola"+ agendamento.getId()+"ola 2 "+ velho.getId());
         if (velho == null || velho.getId() != agendamento.getId()) {
-
+            System.out.println("dd");
             return AgendamentoRepository.save(agendamento);
         }
-        novo = AgendamentoRepository.update(agendamento);
+        try {
+            System.out.println("dddddddddd");
+            if (validacaoAgendamento(agendamento) == false) {
+                System.out.println("dddeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+                return null;
+            } else {
+                System.out.println("444444444444444");
+                novo = AgendamentoRepository.update(agendamento);
+                return novo;
+
+            }
+        } catch (RuntimeException ex) {
+            System.out.println("Exceção de runtime ao atualizar agendamento: " + ex);
+        } catch (Exception ex) {
+            System.out.println("Exceção ao salvar agendamento: " + ex);
+        }
         return novo;
     }
+
+
 
     public static boolean delete(Long agendamentoId) throws SQLException {
         if (existe(agendamentoId)) {
@@ -67,7 +84,7 @@ public class AgendamentoService {
     public static boolean validacaoAgendamento(Agendamento agendamento) {
         boolean retorno = false;
 
-        if(validacaoVisitante(agendamento.getPessoa())) {
+        if(validacaoVisitante(agendamento.getPessoa()) && validacaoImovel(agendamento.getImovel())) {
             if(agendamento.getData().equals("") || agendamento.getHora().equals("")) {
                 retorno = false;
             } else

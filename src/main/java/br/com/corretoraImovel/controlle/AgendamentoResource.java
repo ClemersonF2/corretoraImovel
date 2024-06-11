@@ -56,6 +56,13 @@ public class AgendamentoResource {
     public Response update(@PathParam("id") Long id, Agendamento agendamento) throws SQLException {
         Agendamento novo = null;
         novo = AgendamentoService.update(id, agendamento);
+
+        if(novo == null) {
+            Response.ResponseBuilder response = Response.status(404);
+            response.entity("Informe os campos obrigatórios ou verifique o documento CPF.!");
+            return response.build();
+
+        }
         return Response.ok(novo).build();
     }
 

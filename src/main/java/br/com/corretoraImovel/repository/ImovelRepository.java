@@ -39,11 +39,12 @@ public class ImovelRepository extends Repository{
 
         String sql = "SELECT * FROM Imovel";
         String sqlEndereco = "Select * FROM endereco where idendereco = ?";
-
+        String SqlProprietario = "select * FROM proprietario where idproprietario";
         PreparedStatement ps = null;
 
         ResultSet rs = null;
         ResultSet rsEndereco = null;
+        ResultSet rsProprietario = null;
 
         List<Imovel> imovels = new ArrayList<>();
 
@@ -58,11 +59,14 @@ public class ImovelRepository extends Repository{
 
                     Imovel imovel1 = new Imovel();
                     Endereco endereco = new Endereco();
+                    Proprietario proprietario = new Proprietario();
 
                     //consultar imovel
 
-                    imovel1.setId(rs.getLong("ID"));
+                    imovel1.setId(rs.getLong("idimovel"));
                     endereco.setId(rs.getLong("idendereco"));
+                    proprietario.setId(rs.getLong("idproprietario"));
+                    imovel1.setProprietario(proprietario);
                     imovel1.setEndereco(endereco);
                     imovel1.setDormitorios(rs.getInt("dormitorios"));
                     imovel1.setValorAluguel(rs.getDouble("valor_aluguel"));
@@ -81,13 +85,31 @@ public class ImovelRepository extends Repository{
 
                         while (rsEndereco.next()) {
 
-                            endereco.setId(rsEndereco.getLong("ID"));
+                            endereco.setId(rsEndereco.getLong("idendereco"));
                             endereco.setBairro(rsEndereco.getString("Bairro"));
                             endereco.setLogradouro(rsEndereco.getString("Logradouro"));
                             endereco.setComplemento(rsEndereco.getString("complemento"));
                         }
                     }
+                    //consultar Proprietario
+                    ps = getConnection().prepareStatement(SqlProprietario);
+                    ps.setLong(1, imovel1.getProprietario().getId());
+
+                    rsProprietario = ps.executeQuery();
+
+                    if (rsProprietario.isBeforeFirst()) {
+
+                        while (rsProprietario.next()) {
+
+                            proprietario.setId(rsProprietario.getLong("idendereco"));
+                            proprietario.setNome(rsProprietario.getString("nome"));
+                            proprietario.setDocumento(rsProprietario.getString("cpf"));
+                            proprietario.setTelefone(rsProprietario.getString("telefone"));
+                            proprietario.setEmail(rsProprietario.getString("email"));
+                        }
+                    }
                     imovel1.setEndereco(endereco);
+                    imovel1.setProprietario(proprietario);
                     imovels.add(imovel1);
                 }
             } else {
@@ -227,8 +249,8 @@ public class ImovelRepository extends Repository{
     public static boolean delete(Long imovelId) {
 
         Imovel imovel = null;
-        String sql = "DELETE FROM imovel where ID = ?";
-        String sqlEndereco = "DELETE FROM endereco where ID = ?";
+        String sql = "DELETE FROM imovel where idimovel = ?";
+        String sqlEndereco = "DELETE FROM endereco where idimovel = ?";
         String sqlConsultaEndereco = "Select idendereco  from imovel where idimovel =?";
 
         PreparedStatement ps = null;

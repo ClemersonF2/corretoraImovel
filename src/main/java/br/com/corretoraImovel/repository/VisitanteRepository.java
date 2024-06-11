@@ -229,7 +229,7 @@ public class VisitanteRepository extends Repository{
 
 	public static Pessoa update(@Valid Pessoa visitante) {
 
-		String sql = "UPDATE Pessoa set NOME=?, CPF =? , TELEFONE= ?, EMAIL= ? where idpessoa = ?";
+		String sql = "UPDATE Pessoa set nome=?, cpf =? , telefone= ?, email= ? where idpessoa = ?";
 
 		CallableStatement cs = null;
 

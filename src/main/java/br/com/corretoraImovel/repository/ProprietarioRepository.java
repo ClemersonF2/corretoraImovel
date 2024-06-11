@@ -37,7 +37,7 @@ public class ProprietarioRepository extends Repository{
 	//Consulta que chama banco de dados
 	public static List<Proprietario> consultaTodosProprietarios(){
 		
-			String sql = "SELECT * FROM PROPRIETARIO";
+			String sql = "SELECT * FROM proprietario";
 
 			PreparedStatement ps = null;
 
@@ -56,11 +56,11 @@ public class ProprietarioRepository extends Repository{
 
 						Proprietario pessoaProprietario = new Proprietario();
 
-						pessoaProprietario.setId(rs.getLong("ID"));
-						pessoaProprietario.setNome(rs.getString("NOME"));
-						pessoaProprietario.setDocumento(rs.getString("CPF"));
-						pessoaProprietario.setTelefone(rs.getString("TELEFONE"));
-						pessoaProprietario.setEmail(rs.getString("EMAIL"));
+						pessoaProprietario.setId(rs.getLong("idproprietario"));
+						pessoaProprietario.setNome(rs.getString("nome"));
+						pessoaProprietario.setDocumento(rs.getString("cpf"));
+						pessoaProprietario.setTelefone(rs.getString("telefone"));
+						pessoaProprietario.setEmail(rs.getString("email"));
 
 						proprietarios.add(pessoaProprietario);
 					}
@@ -141,7 +141,7 @@ public class ProprietarioRepository extends Repository{
 	public static boolean delete(Long ProprietarioId) {
 
 		Proprietario proprietario = null;
-		String sql = "DELETE FROM Proprietario where ID = ?";
+		String sql = "DELETE FROM Proprietario where idproprietario = ?";
 		PreparedStatement ps = null;
 
 		proprietario = findById(ProprietarioId);
@@ -192,11 +192,11 @@ public class ProprietarioRepository extends Repository{
 			if (rs.isBeforeFirst()) {
 				Proprietario proprietario = new Proprietario();
 				while (rs.next()) {
-					proprietario.setId(rs.getLong("IDPROPRIETARIO"));
-					proprietario.setNome(rs.getString("NOME"));
-					proprietario.setDocumento(rs.getString("CPF"));
-					proprietario.setEmail(rs.getString("EMAIL"));
-					proprietario.setTelefone(rs.getString("TELEFONE"));
+					proprietario.setId(rs.getLong("idproprietario"));
+					proprietario.setNome(rs.getString("nome"));
+					proprietario.setDocumento(rs.getString("cpf"));
+					proprietario.setEmail(rs.getString("email"));
+					proprietario.setTelefone(rs.getString("telefone"));
 
 				}
 				getConnection().commit();
