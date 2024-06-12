@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Response.ResponseBuilder;
 import jakarta.ws.rs.core.UriBuilder;
 
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.List;
 
 //@Valid
@@ -55,7 +56,7 @@ public class ProprietarioResource {
 	@PUT
 	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam("id") Long id, @Valid Proprietario proprietario) {
+	public Response update(@PathParam("id") Long id, @Valid Proprietario proprietario) throws SQLException {
 		Proprietario novo = null;
 		novo = ProprietarioService.update(id, proprietario);
 		return Response.ok(novo).build();

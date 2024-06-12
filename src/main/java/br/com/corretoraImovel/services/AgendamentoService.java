@@ -45,19 +45,18 @@ public class AgendamentoService {
 
         Agendamento velho = AgendamentoRepository.findById(id);
         Agendamento novo = null;
-        System.out.println("ola"+ velho);
-        System.out.println("ola"+ agendamento.getId()+"ola 2 "+ velho.getId());
+
         if (velho == null || velho.getId() != agendamento.getId()) {
-            System.out.println("dd");
+
             return AgendamentoRepository.save(agendamento);
         }
         try {
-            System.out.println("dddddddddd");
+
             if (validacaoAgendamento(agendamento) == false) {
-                System.out.println("dddeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+
                 return null;
             } else {
-                System.out.println("444444444444444");
+
                 novo = AgendamentoRepository.update(agendamento);
                 return novo;
 

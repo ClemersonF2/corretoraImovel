@@ -151,11 +151,13 @@ public class ProprietarioRepository extends Repository{
 		}
 
 		try {
+			getConnection().setAutoCommit(false);
 			ps = getConnection().prepareStatement(sql);
 
 			ps.setLong(1, ProprietarioId);
 
 			ps.executeUpdate();
+			getConnection().commit();
 
 			return true;
 
@@ -227,7 +229,7 @@ public class ProprietarioRepository extends Repository{
 
 	}
 
-	public static Proprietario update(Proprietario proprietario) {
+	public static Proprietario update(Proprietario proprietario) throws SQLException {
 
 		String sql = "UPDATE PROPRIETARIO set NOME=?, CPF =? , TELEFONE= ?, EMAIL= ? where IDPROPRIETARIO = ?";
 
@@ -250,6 +252,7 @@ public class ProprietarioRepository extends Repository{
 
 		} catch (SQLException e) {
 			System.out.println("Erro ao atualizar o proprietario no banco de dados: " + e.getMessage());
+			getConnection().rollback();
 			if (cs != null)
 				try {
 					cs.close();

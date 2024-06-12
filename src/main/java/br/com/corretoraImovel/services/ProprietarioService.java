@@ -4,6 +4,8 @@ import br.com.corretoraImovel.model.Proprietario;
 import br.com.corretoraImovel.model.Proprietario;
 import br.com.corretoraImovel.repository.ProprietarioRepository;
 
+import java.sql.SQLException;
+
 public class ProprietarioService {
 	
 	static ProprietarioRepository proprietarioRepository = new ProprietarioRepository();
@@ -38,7 +40,7 @@ public class ProprietarioService {
 		
 	}
 
-	public static Proprietario update(Long id, Proprietario proprietario) {
+	public static Proprietario update(Long id, Proprietario proprietario) throws SQLException {
 
 		Proprietario velho = ProprietarioRepository.findById(id);
 		Proprietario novo = null;
