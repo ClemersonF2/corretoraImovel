@@ -28,7 +28,7 @@ public class MyResourceTest {
         // dependency on jersey-media-json module in pom.xml and Main.startServer())
         // --
         // c.configuration().enable(new org.glassfish.jersey.media.json.JsonJaxbFeature());
-
+        //:)
         target = c.target(Main.BASE_URI);
     }
 
